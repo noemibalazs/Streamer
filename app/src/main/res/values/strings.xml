@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Streamer</string>
+
+    <string name="label_popular_stream">Popular Streams</string>
+    <string name="label_icon_content_description">Mastodon icon</string>
+    <string name="label_timeline">Timeline</string>
+    <string name="label_search_hint">Search term</string>
+    <string name="label_progress_indicator_tag">Payload progress indicator</string>
+    <string name="label_user_avatar">User Avatar</string>
+    <string name="label_no_internet_connection">Oops, there is no internet connection!</string>
+    <string name="label_lazy_column_tag">Lazy column</string>
+    <string name="label_search_text_tag">Search text tag</string>
+</resources>

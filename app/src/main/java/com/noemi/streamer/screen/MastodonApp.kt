@@ -1,5 +1,6 @@
 package com.noemi.streamer.screen
 
+import android.annotation.SuppressLint
 import android.net.Uri
 import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsIntent
@@ -29,7 +30,6 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.*
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -79,6 +79,7 @@ private fun MastodonAppBar(title: String, contentDescription: String, modifier: 
     )
 }
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 private fun MastodonScreen(modifier: Modifier = Modifier) {
     val viewModel = hiltViewModel<MainViewModel>()
@@ -182,6 +183,7 @@ private fun SearchTextField(
     )
 }
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 private fun ScreenContent(payloads: List<PayloadData>, isLoading: Boolean, isActiveNetwork: Boolean, modifier: Modifier = Modifier) {
     val lazyListState = rememberLazyListState()
@@ -204,6 +206,7 @@ private fun ScreenContent(payloads: List<PayloadData>, isLoading: Boolean, isAct
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                     strokeWidth = 3.dp
                 )
+
             else -> {
                 LazyColumn(
                     contentPadding = PaddingValues(start = 8.dp, end = 8.dp, top = 20.dp, bottom = 20.dp),

@@ -3,9 +3,6 @@ package com.noemi.streamer.di
 import android.content.Context
 import android.net.ConnectivityManager
 import androidx.room.Room
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.google.gson.Strictness
 import com.noemi.streamer.ktor.KtorDataSource
 import com.noemi.streamer.ktor.KtorDataSourceImpl
 import com.noemi.streamer.networkconnection.ConnectionService
@@ -31,19 +28,13 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
 @Module
 class AppModule {
-
-    @Provides
-    @Singleton
-    fun providesGson(): Gson = GsonBuilder()
-        .setStrictness(Strictness.LENIENT)
-        .create()
-
 
     @Provides
     @Singleton
@@ -83,10 +74,19 @@ class AppModule {
         scope: CoroutineScope
     ): ConnectionService = ConnectionServiceImpl(connectivityManager, scope)
 
+    @OptIn(ExperimentalSerializationApi::class)
+    @Provides
+    @Singleton
+    fun providesJson() = Json {
+        prettyPrint = true
+        isLenient = true
+        ignoreUnknownKeys = true
+        explicitNulls = false
+    }
 
     @Singleton
     @Provides
-    fun providesKtorClient(): HttpClient = HttpClient(Android) {
+    fun providesKtorClient(json: Json): HttpClient = HttpClient(Android.create()) {
         defaultRequest {
             url(BASE_URL)
         }
@@ -96,11 +96,11 @@ class AppModule {
         }
 
         install(ContentNegotiation) {
-            json(Json)
+            json(json)
         }
     }
 
     @Provides
     @Singleton
-    fun providesKtorDataSource(client: HttpClient, gson: Gson): KtorDataSource = KtorDataSourceImpl(client, gson)
+    fun providesKtorDataSource(client: HttpClient, json: Json): KtorDataSource = KtorDataSourceImpl(client, json)
 }

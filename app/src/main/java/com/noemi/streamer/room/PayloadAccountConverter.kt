@@ -2,22 +2,20 @@ package com.noemi.streamer.room
 
 import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.noemi.streamer.model.PayloadAccount
+import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
 @ProvidedTypeConverter
-class PayloadAccountConverter @Inject constructor(private val gson: Gson) {
+class PayloadAccountConverter @Inject constructor(private val json: Json) {
 
     @TypeConverter
     fun toString(account: PayloadAccount): String {
-        return gson.toJson(account)
+        return json.encodeToString(PayloadAccount.serializer(), account)
     }
 
     @TypeConverter
-    fun fromString(json: String): PayloadAccount {
-        val type = object : TypeToken<PayloadAccount>() {}.type
-        return gson.fromJson(json, type)
+    fun fromString(jsonStr: String): PayloadAccount {
+        return json.decodeFromString(jsonStr)
     }
 }

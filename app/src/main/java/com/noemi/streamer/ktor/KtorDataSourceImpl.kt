@@ -1,6 +1,5 @@
 package com.noemi.streamer.ktor
 
-import com.google.gson.Gson
 import com.noemi.streamer.model.Event
 import com.noemi.streamer.model.EventType
 import com.noemi.streamer.model.PayloadData
@@ -17,12 +16,13 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.isActive
+import kotlinx.serialization.json.Json
 import timber.log.Timber
 import javax.inject.Inject
 
 class KtorDataSourceImpl @Inject constructor(
     private val httpClient: HttpClient,
-    private val gson: Gson
+    private val json: Json
 ) : KtorDataSource {
 
     override fun observePayloads(query: String, reconnectDelayMillis: Long): Flow<Event> = flow {
@@ -82,7 +82,7 @@ class KtorDataSourceImpl @Inject constructor(
                     val data = line.substring(5).trim()
 
                     if (event.type == EventType.UPDATE || event.type == EventType.STATUS_UPDATE) {
-                        event = event.copy(payload = gson.fromJson(data, PayloadData::class.java))
+                        event = event.copy(payload = json.decodeFromString<PayloadData>(data))
                     }
 
                     if (event.type == EventType.DELETE) {

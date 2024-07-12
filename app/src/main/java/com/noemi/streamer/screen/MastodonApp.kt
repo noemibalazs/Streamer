@@ -111,7 +111,7 @@ private fun MastodonScreen(modifier: Modifier = Modifier) {
                 stateValue = true
             }
 
-            if (stateValue) viewModel.reFetchPublicTimelines()
+            if (stateValue && networkState) viewModel.reFetchPublicTimelines()
         }
     }
 }

@@ -2,7 +2,7 @@ package com.noemi.streamer
 
 import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
-import com.noemi.streamer.ktor.KtorDataSource
+import com.noemi.streamer.service.PayloadService
 import com.noemi.streamer.model.Event
 import com.noemi.streamer.model.EventType
 import com.noemi.streamer.model.PayloadData
@@ -26,7 +26,7 @@ class MainViewModelTest {
     private val dispatcher: TestDispatcher = UnconfinedTestDispatcher()
 
     private val repository: PayloadRepository = mockk()
-    private val ktorDataSource: KtorDataSource = mockk()
+    private val payloadService: PayloadService = mockk()
     private lateinit var viewModel: MainViewModel
     private val query = "media"
     private val event: Event = mockk()
@@ -36,7 +36,7 @@ class MainViewModelTest {
     @Before
     fun setUp() {
         Dispatchers.setMain(dispatcher)
-        viewModel = MainViewModel(repository, ktorDataSource)
+        viewModel = MainViewModel(repository, payloadService)
     }
 
     @After
@@ -56,7 +56,7 @@ class MainViewModelTest {
             viewModel.payloadsState.test {
                 val result = awaitItem()
 
-                ktorDataSource.observePayloads(query).test {
+                payloadService.observePayloads(query).test {
                     val event = awaitItem()
                     assertThat(result).isEqualTo(event.payload)
                 }
@@ -84,7 +84,7 @@ class MainViewModelTest {
             viewModel.payloadsState.test {
                 awaitComplete()
 
-                ktorDataSource.observePayloads(query).test {
+                payloadService.observePayloads(query).test {
                     val error = awaitError()
                     assertThat(viewModel.loadingState.value).isFalse()
                     assertThat(viewModel.errorState.value).isEqualTo(error.message)
@@ -111,7 +111,7 @@ class MainViewModelTest {
             viewModel.payloadsState.test {
                 val result = awaitItem()
 
-                ktorDataSource.observePayloads(query).test {
+                payloadService.observePayloads(query).test {
                     val event = awaitItem()
                     assertThat(result).isEqualTo(event.payload)
                 }
@@ -135,7 +135,7 @@ class MainViewModelTest {
             viewModel.payloadsState.test {
                 awaitComplete()
 
-                ktorDataSource.observePayloads(query).test {
+                payloadService.observePayloads(query).test {
                     val error = awaitError()
                     assertThat(viewModel.errorState.value).isEqualTo(error.message)
                 }

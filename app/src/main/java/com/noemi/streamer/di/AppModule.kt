@@ -3,8 +3,8 @@ package com.noemi.streamer.di
 import android.content.Context
 import android.net.ConnectivityManager
 import androidx.room.Room
-import com.noemi.streamer.ktor.KtorDataSource
-import com.noemi.streamer.ktor.KtorDataSourceImpl
+import com.noemi.streamer.service.PayloadService
+import com.noemi.streamer.service.PayloadServiceImpl
 import com.noemi.streamer.networkconnection.ConnectionService
 import com.noemi.streamer.networkconnection.ConnectionServiceImpl
 import com.noemi.streamer.repository.PayloadRepository
@@ -102,5 +102,5 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun providesKtorDataSource(client: HttpClient, json: Json): KtorDataSource = KtorDataSourceImpl(client, json)
+    fun providePayloadService(client: HttpClient, json: Json): PayloadService = PayloadServiceImpl(client, json)
 }

@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.noemi.streamer.ktor.KtorDataSource
+import com.noemi.streamer.service.PayloadService
 import com.noemi.streamer.model.Event
 import com.noemi.streamer.model.EventType
 import com.noemi.streamer.model.PayloadData
@@ -22,7 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val repository: PayloadRepository,
-    private val ktorDataSource: KtorDataSource
+    private val payloadService: PayloadService
 ) : ViewModel() {
 
     private var _payloadsState = MutableStateFlow(emptyList<PayloadData>())
@@ -58,7 +58,7 @@ class MainViewModel @Inject constructor(
 
             repository.clearDataBase()
 
-            ktorDataSource.observePayloads(query)
+            payloadService.observePayloads(query)
                 .catch {
                     _errorState.emit(it.message ?: "Error while fetching events")
                     _loadingState.emit(false)
@@ -74,7 +74,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             _errorState.emit("")
 
-            ktorDataSource.observePayloads(searchTerm)
+            payloadService.observePayloads(searchTerm)
                 .catch {
                     _errorState.emit(it.message ?: "Error while fetching events")
                 }

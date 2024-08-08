@@ -1,11 +1,11 @@
-package com.noemi.streamer.ktor
+package com.noemi.streamer.service
 
+import com.noemi.streamer.BuildConfig
 import com.noemi.streamer.model.Event
 import com.noemi.streamer.model.EventType
 import com.noemi.streamer.model.PayloadData
 import com.noemi.streamer.model.toEventType
 import com.noemi.streamer.util.BASE_URL
-import com.noemi.streamer.util.TOKEN
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
@@ -20,10 +20,10 @@ import kotlinx.serialization.json.Json
 import timber.log.Timber
 import javax.inject.Inject
 
-class KtorDataSourceImpl @Inject constructor(
+class PayloadServiceImpl @Inject constructor(
     private val httpClient: HttpClient,
     private val json: Json
-) : KtorDataSource {
+) : PayloadService {
 
     override fun observePayloads(query: String, reconnectDelayMillis: Long): Flow<Event> = flow {
         coroutineScope {
@@ -54,7 +54,7 @@ class KtorDataSourceImpl @Inject constructor(
             headers {
                 append(HttpHeaders.Accept, "text/event-stream")
                 append(HttpHeaders.Accept, "application/json")
-                append(HttpHeaders.Authorization, TOKEN)
+                append(HttpHeaders.Authorization, "Bearer ${BuildConfig.MASTODON_TOKEN}")
                 append(HttpHeaders.CacheControl, "no-cache")
                 append(HttpHeaders.Connection, "keep-alive")
             }
